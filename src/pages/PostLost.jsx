@@ -7,26 +7,37 @@ const PostLost = () => {
     dateLost: "",
     location: "",
     contactInfo: "",
+    link: "",
+    image: null,
   });
 
+  const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value, files } = e.target;
+    if (name === "image" && files.length > 0) {
+      const file = files[0];
+      setFormData((prev) => ({
+        ...prev,
+        image: file,
+      }));
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const validate = () => {
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Title is required";
-    if (!formData.description.trim())
-      newErrors.description = "Description is required";
+    if (!formData.description.trim()) newErrors.description = "Description is required";
     if (!formData.dateLost) newErrors.dateLost = "Date lost is required";
     if (!formData.location.trim()) newErrors.location = "Location is required";
-    if (!formData.contactInfo.trim())
-      newErrors.contactInfo = "Contact info is required";
+    if (!formData.contactInfo.trim()) newErrors.contactInfo = "Contact info is required";
     return newErrors;
   };
 
@@ -34,7 +45,6 @@ const PostLost = () => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
-      // Submit form data to API or handle logic here
       alert("Lost item posted successfully!");
       setFormData({
         title: "",
@@ -42,7 +52,10 @@ const PostLost = () => {
         dateLost: "",
         location: "",
         contactInfo: "",
+        link: "",
+        image: null,
       });
+      setImagePreview(null);
       setErrors({});
     } else {
       setErrors(validationErrors);
@@ -50,18 +63,16 @@ const PostLost = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-md shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+    <div className="max-w-3xl mx-auto p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
         Post a Lost Item
       </h2>
-      <form onSubmit={handleSubmit} noValidate>
+
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
         {/* Title */}
-        <div className="mb-4">
-          <label
-            htmlFor="title"
-            className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
-          >
-            Title
+        <div>
+          <label htmlFor="title" className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+            Item Title <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -69,25 +80,18 @@ const PostLost = () => {
             id="title"
             value={formData.title}
             onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border ${
-              errors.title
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } focus:outline-none focus:ring-2 focus:ring-ulab-blue`}
+            className={`w-full px-4 py-2 rounded-lg border ${
+              errors.title ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+            } bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             placeholder="E.g. Lost Black Wallet"
           />
-          {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-          )}
+          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
         </div>
 
         {/* Description */}
-        <div className="mb-4">
-          <label
-            htmlFor="description"
-            className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
-          >
-            Description
+        <div>
+          <label htmlFor="description" className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+            Description <span className="text-red-500">*</span>
           </label>
           <textarea
             name="description"
@@ -95,25 +99,18 @@ const PostLost = () => {
             rows="4"
             value={formData.description}
             onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border resize-none ${
-              errors.description
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } focus:outline-none focus:ring-2 focus:ring-ulab-blue`}
+            className={`w-full px-4 py-2 rounded-lg border resize-none ${
+              errors.description ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+            } bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             placeholder="Provide details about the lost item"
           />
-          {errors.description && (
-            <p className="text-red-500 text-sm mt-1">{errors.description}</p>
-          )}
+          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
         </div>
 
         {/* Date Lost */}
-        <div className="mb-4">
-          <label
-            htmlFor="dateLost"
-            className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
-          >
-            Date Lost
+        <div>
+          <label htmlFor="dateLost" className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+            Date Lost <span className="text-red-500">*</span>
           </label>
           <input
             type="date"
@@ -121,24 +118,17 @@ const PostLost = () => {
             id="dateLost"
             value={formData.dateLost}
             onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border ${
-              errors.dateLost
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } focus:outline-none focus:ring-2 focus:ring-ulab-blue`}
+            className={`w-full px-4 py-2 rounded-lg border ${
+              errors.dateLost ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+            } bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
           />
-          {errors.dateLost && (
-            <p className="text-red-500 text-sm mt-1">{errors.dateLost}</p>
-          )}
+          {errors.dateLost && <p className="text-red-500 text-sm mt-1">{errors.dateLost}</p>}
         </div>
 
         {/* Location */}
-        <div className="mb-4">
-          <label
-            htmlFor="location"
-            className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
-          >
-            Location
+        <div>
+          <label htmlFor="location" className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+            Location Lost <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -146,25 +136,18 @@ const PostLost = () => {
             id="location"
             value={formData.location}
             onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border ${
-              errors.location
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } focus:outline-none focus:ring-2 focus:ring-ulab-blue`}
+            className={`w-full px-4 py-2 rounded-lg border ${
+              errors.location ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+            } bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             placeholder="Where did you lose it?"
           />
-          {errors.location && (
-            <p className="text-red-500 text-sm mt-1">{errors.location}</p>
-          )}
+          {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
         </div>
 
         {/* Contact Info */}
-        <div className="mb-6">
-          <label
-            htmlFor="contactInfo"
-            className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
-          >
-            Contact Info
+        <div>
+          <label htmlFor="contactInfo" className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+            Contact Info <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -172,24 +155,60 @@ const PostLost = () => {
             id="contactInfo"
             value={formData.contactInfo}
             onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border ${
-              errors.contactInfo
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } focus:outline-none focus:ring-2 focus:ring-ulab-blue`}
+            className={`w-full px-4 py-2 rounded-lg border ${
+              errors.contactInfo ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+            } bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             placeholder="Phone number or email"
           />
-          {errors.contactInfo && (
-            <p className="text-red-500 text-sm mt-1">{errors.contactInfo}</p>
+          {errors.contactInfo && <p className="text-red-500 text-sm mt-1">{errors.contactInfo}</p>}
+        </div>
+
+        {/* Link Option */}
+        <div>
+          <label htmlFor="link" className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+            External Link (optional)
+          </label>
+          <input
+            type="url"
+            name="link"
+            id="link"
+            value={formData.link}
+            onChange={handleChange}
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="E.g. Google Drive image link"
+          />
+        </div>
+
+        {/* Image Upload */}
+        <div>
+          <label htmlFor="image" className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+            Upload Image (optional)
+          </label>
+          <input
+            type="file"
+            name="image"
+            id="image"
+            accept="image/*"
+            onChange={handleChange}
+            className="w-full text-gray-700 dark:text-gray-300"
+          />
+          {imagePreview && (
+            <div className="mt-3">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="max-h-48 rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+            </div>
           )}
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-ulab-blue text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition"
         >
-          Submit Lost Item
+          📤 Submit Lost Item
         </button>
       </form>
     </div>

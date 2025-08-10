@@ -16,11 +16,11 @@ const router = createBrowserRouter([
         index: true,
         Component: Home,
       },
+      {
+        path: "post-lost",
+        Component: PostLost,
+      },
     ],
-  },
-  {
-    path: "post-lost",
-    Component: PostLost,
   },
 ]);
 
