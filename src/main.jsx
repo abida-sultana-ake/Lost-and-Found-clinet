@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import PostLost from "./pages/PostLost";
+import PostFound from "./pages/PostFound";
+import AllItems from "./pages/AllItems";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,14 @@ const router = createBrowserRouter([
       {
         path: "post-lost",
         Component: PostLost,
+      },
+      {
+        path: "post-found",
+        Component: PostFound,
+      },
+      {
+        path: "all-items",
+        Component: AllItems,
       },
     ],
   },
