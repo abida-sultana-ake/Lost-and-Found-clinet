@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FiEye, FiTrash2 } from "react-icons/fi";
 
 const AllItems = () => {
   const [items, setItems] = useState([]);
@@ -33,6 +34,12 @@ const AllItems = () => {
     ]);
   }, []);
 
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      setItems(items.filter((item) => item.id !== id));
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">
@@ -48,25 +55,25 @@ const AllItems = () => {
           <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
             <thead className="bg-gray-100 dark:bg-gray-700">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">
+                <th className="px-4 py-3 text-left text-sm font-semibold">
                   Image
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">
+                <th className="px-4 py-3 text-left text-sm font-semibold">
                   Type
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">
+                <th className="px-4 py-3 text-left text-sm font-semibold">
                   Title
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">
+                <th className="px-4 py-3 text-left text-sm font-semibold">
                   Date
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">
+                <th className="px-4 py-3 text-left text-sm font-semibold">
                   Location
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">
+                <th className="px-4 py-3 text-left text-sm font-semibold">
                   Email
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">
+                <th className="px-4 py-3 text-left text-sm font-semibold">
                   Action
                 </th>
               </tr>
@@ -77,7 +84,6 @@ const AllItems = () => {
                   key={item.id}
                   className="hover:bg-gray-50 dark:hover:bg-gray-800"
                 >
-                  {/* Image column */}
                   <td className="px-4 py-3">
                     <img
                       src={item.image}
@@ -85,8 +91,6 @@ const AllItems = () => {
                       className="w-16 h-16 object-cover rounded-md border"
                     />
                   </td>
-
-                  {/* Type column */}
                   <td className="px-4 py-3 text-sm">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -98,24 +102,10 @@ const AllItems = () => {
                       {item.type}
                     </span>
                   </td>
-
-                  {/* Title */}
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {item.title}
-                  </td>
-
-                  {/* Date */}
-                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                    {item.date}
-                  </td>
-
-                  {/* Location */}
-                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                    {item.location}
-                  </td>
-
-                  {/* Email */}
-                  <td className="px-4 py-3 text-sm text-blue-600 dark:text-blue-400">
+                  <td className="px-4 py-3 font-medium">{item.title}</td>
+                  <td className="px-4 py-3">{item.date}</td>
+                  <td className="px-4 py-3">{item.location}</td>
+                  <td className="px-4 py-3 text-blue-600">
                     <a
                       href={`mailto:${item.contact}`}
                       className="hover:underline"
@@ -123,14 +113,20 @@ const AllItems = () => {
                       {item.contact}
                     </a>
                   </td>
-
-                  {/* View button */}
-                  <td className="px-4 py-3 text-sm">
+                  <td className="px-4 py-3 flex items-center gap-3">
                     <button
                       onClick={() => setSelectedItem(item)}
-                      className="text-blue-600 hover:underline"
+                      className="text-blue-600 hover:text-blue-800"
+                      title="View"
                     >
-                      View
+                      <FiEye size={18} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="Delete"
+                    >
+                      <FiTrash2 size={18} />
                     </button>
                   </td>
                 </tr>
@@ -150,7 +146,6 @@ const AllItems = () => {
             >
               ✕
             </button>
-
             {selectedItem.image && (
               <img
                 src={selectedItem.image}
@@ -158,7 +153,6 @@ const AllItems = () => {
                 className="w-full h-48 object-cover rounded-lg mb-4"
               />
             )}
-
             <h3 className="text-2xl font-bold mb-4">{selectedItem.title}</h3>
             <p className="mb-2">
               <strong>Type:</strong>{" "}
